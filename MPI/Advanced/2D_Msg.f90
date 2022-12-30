@@ -1,6 +1,6 @@
 ! Example Name : 2D_Msg.f90
 ! Compile      : $ mpif90 -g -o 2D_Msg.x -Wall 2D_Msg.f90		
-! Run          : $ mpirun -np 32 -hostfile hosts 2D_Msg.x
+! Run          : $ mpirun -np 12 -hostfile hosts_12 2D_Msg.x
 
 PROGRAM 2D_Msg
 IMPLICIT NONE
