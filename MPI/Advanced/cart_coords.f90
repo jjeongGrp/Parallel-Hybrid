@@ -1,4 +1,4 @@
-PROGRAM cart_create
+PROGRAM cart_coords
 INCLUDE 'mpif.h'
 INTEGER oldcomm, newcomm, ndims, ierr
 INTEGER dimsize(0:1),coords(0:1),rank
