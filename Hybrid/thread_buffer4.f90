@@ -1,0 +1,33 @@
+program thread_and_buffer
+	use omp_lib
+	implicit none
+	include 'mpif.h'
+	integer :: i, tid, rank, nprocs, data(50000), provide, ierr
+	integer :: status(MPI_STATUS_SIZE), req
+
+	call MPI_Init_thread(MPI_THREAD_FUNNELED, provide, ierr)
+	call MPI_Comm_size(MPI_COMM_WORLD, nprocs, ierr)
+	call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+
+!$OMP PARALLEL PRIVATE(i, tid, status, req)
+	tid = omp_get_thread_num()
+	if( rank == 0 .and. tid == 0 ) then
+		call sleep(2)
+		call MPI_Recv(data, 4, MPI_INT, 1, tid, MPI_COMM_WORLD, status, ierr)
+		do i=1,4
+			print *, 'data[',i,']=',data(i)
+		end do
+	else if( rank == 1 ) then
+		data(tid+1) = tid
+		if( tid == 0 ) then
+			call MPI_Issend(data, 4, MPI_INT, 0, tid, MPI_COMM_WORLD, req, ierr)
+			call MPI_Wait(req, status)
+		else if( tid == 1 ) then
+			call sleep(1);
+			data(tid+1) = 10
+		end if
+	end if
+!$OMP END PARALLEL
+
+	call MPI_Finalize(ierr)
+end
